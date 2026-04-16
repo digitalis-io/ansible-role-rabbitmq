@@ -1,4 +1,10 @@
 ---
+- name: Install gnupg prerequisite
+  ansible.builtin.apt:
+    name: gnupg
+    state: present
+    update_cache: true
+
 - name: Ensure /usr/share/keyrings directory exists
   ansible.builtin.file:
     path: /usr/share/keyrings
@@ -66,6 +72,10 @@
     name: "{{ rabbitmq_erlang_packages }}"
     state: present
     update_cache: true
+  retries: 3
+  delay: 10
+  register: result
+  until: result is succeeded
   tags:
     - rabbitmq-server
     - packages
@@ -75,6 +85,10 @@
     name: "rabbitmq-server={{ rabbitmq_version }}-1"
     state: present
     update_cache: true
+  retries: 3
+  delay: 10
+  register: result
+  until: result is succeeded
   tags:
     - rabbitmq-server
     - packages

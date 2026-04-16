@@ -70,6 +70,7 @@
         mode: "0644"
         owner: rabbitmq
         group: rabbitmq
+      when: rabbitmq_ssl is defined
       notify: Restart rabbitmq
 
     - name: Write advanced config
