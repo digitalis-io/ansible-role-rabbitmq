@@ -17,6 +17,7 @@
         value: "{{ item.value }}"
         state: present
       loop: "{{ rabbitmq_sysctl | dict2items }}"
+      when: not ansible_virtualization_type == 'docker'
 
 - name: Set up for RedHat
   ansible.builtin.include_tasks: setup-RedHat.yml

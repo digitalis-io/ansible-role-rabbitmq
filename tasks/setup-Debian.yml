@@ -13,59 +13,24 @@
 
 - name: Download RabbitMQ team GPG key
   ansible.builtin.get_url:
-    url: "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+    url: "{{ rabbitmq_apt_key_url }}"
     dest: /tmp/rabbitmq-team.asc
     mode: "0644"
 
 - name: Dearmor RabbitMQ team GPG key
   ansible.builtin.command:
-    cmd: gpg --dearmor -o /usr/share/keyrings/com.rabbitmq.team.gpg /tmp/rabbitmq-team.asc
-    creates: /usr/share/keyrings/com.rabbitmq.team.gpg
-
-- name: Download Erlang signing key
-  ansible.builtin.get_url:
-    url: "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key"
-    dest: /tmp/rabbitmq-erlang.asc
-    mode: "0644"
-
-- name: Dearmor Erlang signing key
-  ansible.builtin.command:
-    cmd: gpg --dearmor -o /usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg /tmp/rabbitmq-erlang.asc
-    creates: /usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg
-
-- name: Download RabbitMQ server signing key
-  ansible.builtin.get_url:
-    url: "https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key"
-    dest: /tmp/rabbitmq-server.asc
-    mode: "0644"
-
-- name: Dearmor RabbitMQ server signing key
-  ansible.builtin.command:
-    cmd: gpg --dearmor -o /usr/share/keyrings/rabbitmq.9F4587F226208342.gpg /tmp/rabbitmq-server.asc
-    creates: /usr/share/keyrings/rabbitmq.9F4587F226208342.gpg
+    cmd: gpg --dearmor -o {{ rabbitmq_apt_key_path }} /tmp/rabbitmq-team.asc
+    creates: "{{ rabbitmq_apt_key_path }}"
 
 - name: Configure RabbitMQ APT repository
   ansible.builtin.copy:
     dest: /etc/apt/sources.list.d/rabbitmq.list
     mode: "0644"
     content: |
-      ## Provides modern Erlang/OTP releases
-      ##
-      deb [arch=amd64 signed-by=/usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg] https://ppa1.rabbitmq.com/rabbitmq/rabbitmq-erlang/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-      deb-src [signed-by=/usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg] https://ppa1.rabbitmq.com/rabbitmq/rabbitmq-erlang/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-
-      # another mirror for redundancy
-      deb [arch=amd64 signed-by=/usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg] https://ppa2.rabbitmq.com/rabbitmq/rabbitmq-erlang/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-      deb-src [signed-by=/usr/share/keyrings/rabbitmq.E495BB49CC4BBE5B.gpg] https://ppa2.rabbitmq.com/rabbitmq/rabbitmq-erlang/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-
-      ## Provides RabbitMQ
-      ##
-      deb [arch=amd64 signed-by=/usr/share/keyrings/rabbitmq.9F4587F226208342.gpg] https://ppa1.rabbitmq.com/rabbitmq/rabbitmq-server/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-      deb-src [signed-by=/usr/share/keyrings/rabbitmq.9F4587F226208342.gpg] https://ppa1.rabbitmq.com/rabbitmq/rabbitmq-server/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-
-      # another mirror for redundancy
-      deb [arch=amd64 signed-by=/usr/share/keyrings/rabbitmq.9F4587F226208342.gpg] https://ppa2.rabbitmq.com/rabbitmq/rabbitmq-server/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
-      deb-src [signed-by=/usr/share/keyrings/rabbitmq.9F4587F226208342.gpg] https://ppa2.rabbitmq.com/rabbitmq/rabbitmq-server/deb/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} main
+      {% for repo in rabbitmq_apt_repos %}
+      deb [arch={{ rabbitmq_apt_arch }} signed-by={{ rabbitmq_apt_key_path }}] {{ repo.url }}/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
+      deb-src [signed-by={{ rabbitmq_apt_key_path }}] {{ repo.url }}/{{ ansible_distribution | lower }}/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main
+      {% endfor %}
 
 - name: Install Erlang packages
   ansible.builtin.apt:

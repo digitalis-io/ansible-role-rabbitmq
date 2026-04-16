@@ -4,8 +4,30 @@ rabbitmq_state: started
 rabbitmq_enabled: true
 rabbitmq_use_haproxy: false
 
-rabbitmq_version: "4.0.5"
-rabbitmq_erlang_version: "1:27.2-1"
+rabbitmq_version: "4.2.5"
+
+rabbitmq_apt_arch: "{{ ansible_architecture | replace('x86_64', 'amd64') | replace('aarch64', 'arm64') }}"
+rabbitmq_apt_key_path: /usr/share/keyrings/com.rabbitmq.team.gpg
+rabbitmq_apt_key_url: "https://keys.openpgp.org/vks/v1/by-fingerprint/0A9AF2115F4687BD29803A206B73A36E6026DFCA"
+rabbitmq_apt_repos:
+  - url: https://deb1.rabbitmq.com/rabbitmq-erlang
+    type: erlang
+  - url: https://deb2.rabbitmq.com/rabbitmq-erlang
+    type: erlang
+  - url: https://deb1.rabbitmq.com/rabbitmq-server
+    type: server
+  - url: https://deb2.rabbitmq.com/rabbitmq-server
+    type: server
+
+# Per-distribution Erlang versions (supported: Ubuntu 22.04/24.04, Debian 12/13)
+rabbitmq_erlang_version_map:
+  jammy: "1:27.2-1"     # Ubuntu 22.04 (from RabbitMQ Erlang repo)
+  noble: "1:27.2-1"     # Ubuntu 24.04 (from RabbitMQ Erlang repo)
+  bookworm: "1:27.2-1"  # Debian 12
+  trixie: "1:27.2-1"    # Debian 13
+
+rabbitmq_erlang_version: "{{ rabbitmq_erlang_version_map.get(ansible_distribution_release, '1:27.2-1') }}"
+
 rabbitmq_erlang_packages:
   - erlang-asn1={{ rabbitmq_erlang_version }}
   - erlang-base={{ rabbitmq_erlang_version }}
