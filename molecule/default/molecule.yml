@@ -1,0 +1,20 @@
+---
+driver:
+  name: docker
+platforms:
+  - name: instance
+    image: "${MOLECULE_IMAGE:-geerlingguy/docker-ubuntu2404-ansible}"
+    pre_build_image: true
+    privileged: true
+    command: /lib/systemd/systemd
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      instance:
+        ansible_python_interpreter: auto
+verifier:
+  name: ansible

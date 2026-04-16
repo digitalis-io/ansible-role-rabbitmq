@@ -1,0 +1,20 @@
+# Ansible
+*.retry
+.molecule/
+molecule/**/molecule.yml.bak
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.tox/
+
+# Editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# macOS
+.DS_Store

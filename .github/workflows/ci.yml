@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ansible-core ansible-lint yamllint pre-commit
+      - run: pre-commit run --all-files
+
+  molecule:
+    runs-on: ubuntu-latest
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: rockylinux9
+            image: geerlingguy/docker-rockylinux9-ansible
+          - platform: rockylinux10
+            image: geerlingguy/docker-rockylinux10-ansible
+          - platform: ubuntu2204
+            image: geerlingguy/docker-ubuntu2204-ansible
+          - platform: ubuntu2404
+            image: geerlingguy/docker-ubuntu2404-ansible
+          - platform: debian12
+            image: geerlingguy/docker-debian12-ansible
+          - platform: debian13
+            image: geerlingguy/docker-debian13-ansible
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ansible-core molecule[docker] docker
+      - run: MOLECULE_IMAGE=${{ matrix.image }} molecule -v test
