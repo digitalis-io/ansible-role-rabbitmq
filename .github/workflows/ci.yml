@@ -41,4 +41,5 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install ansible-core "molecule-plugins[docker]" docker
+      - run: ansible-galaxy collection install -r requirements.yml
       - run: MOLECULE_IMAGE=${{ matrix.image }} molecule -v converge
