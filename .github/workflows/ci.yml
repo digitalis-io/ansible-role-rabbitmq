@@ -2,8 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main,develop]
+    paths:
+      - "defaults/**"
+      - "tasks/**"
+      - "templates/**"
+      - "molecule/**"
   pull_request:
+    paths:
+      - "defaults/**"
+      - "tasks/**"
+      - "templates/**"
+      - "molecule/**"
 
 jobs:
   lint:
