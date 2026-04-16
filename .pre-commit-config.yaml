@@ -20,11 +20,7 @@ repos:
     rev: v26.4.0
     hooks:
       - id: ansible-lint
-        name: ansible-lint
-        language: python
-        entry: ansible-lint
         args: [--profile=production]
-        pass_filenames: false
-        always_run: true
+        language_version: python3.13
         additional_dependencies:
-          - ansible-core>=2.20
+          - ansible-core>=2.19
