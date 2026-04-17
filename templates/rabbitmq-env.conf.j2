@@ -1,5 +1,9 @@
+{% if rabbitmq_use_longname | default(false) %}
 RABBITMQ_NODENAME=rabbit@{{ ansible_fqdn }}
 RABBITMQ_USE_LONGNAME=true
+{% else %}
+RABBITMQ_NODENAME=rabbit@{{ ansible_hostname }}
+{% endif %}
 
 {% if rabbitmq_ssl is defined and rabbitmq_ssl.key != "" %}
 {% if erlang_ssl_path is defined and erlang_ssl_path != "" %}

@@ -11,11 +11,17 @@ cluster_tags.{{ item }} = {{ rabbitmq_cluster_tags[item] }}
 {% endfor %}
 {% endif %}
 
+{% if rabbitmq_cluster_members | length > 0 %}
 cluster_formation.peer_discovery_backend = rabbit_peer_discovery_classic_config
 {% for node in rabbitmq_cluster_members %}
+{% if rabbitmq_use_longname | default(false) %}
 cluster_formation.classic_config.nodes.{{ loop.index }} = rabbit@{{ node }}.{{ rabbitmq_domain | default('internal') }}
+{% else %}
+cluster_formation.classic_config.nodes.{{ loop.index }} = rabbit@{{ node }}
+{% endif %}
 {% endfor %}
 cluster_formation.target_cluster_size_hint = {{ rabbitmq_cluster_members | length }}
+{% endif %}
 
 password_hashing_module = {{ rabbitmq_password_hashing | default('rabbit_password_hashing_sha512') }}
 
