@@ -147,7 +147,7 @@
 - name: Download rabbitmqadmin CLI
   tags: rabbitmqadmin
   ansible.builtin.get_url:
-    url: "{{ 'https' if rabbitmq_ssl is defined else 'http' }}://{{ ansible_hostname }}:{{ 15671 if rabbitmq_ssl is defined else 15672 }}/cli/rabbitmqadmin"
+    url: "{{ 'https' if rabbitmq_ssl is defined else 'http' }}://127.0.0.1:{{ 15671 if rabbitmq_ssl is defined else 15672 }}/cli/rabbitmqadmin"
     dest: /usr/local/bin/rabbitmqadmin
     mode: "0755"
     validate_certs: false

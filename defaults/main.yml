@@ -3,6 +3,7 @@ rabbitmq_daemon: rabbitmq-server
 rabbitmq_state: started
 rabbitmq_enabled: true
 rabbitmq_use_haproxy: false
+rabbitmq_use_longname: false
 
 rabbitmq_version: "4.2.5"
 
@@ -21,10 +22,10 @@ rabbitmq_apt_repos:
 
 # Per-distribution Erlang versions (supported: Ubuntu 22.04/24.04, Debian 12/13)
 rabbitmq_erlang_version_map:
-  jammy: "1:27.2-1"     # Ubuntu 22.04 (from RabbitMQ Erlang repo)
-  noble: "1:27.2-1"     # Ubuntu 24.04 (from RabbitMQ Erlang repo)
-  bookworm: "1:27.2-1"  # Debian 12
-  trixie: "1:27.2-1"    # Debian 13
+  jammy: "1:27.3.4.9-1"     # Ubuntu 22.04 (from RabbitMQ Erlang repo)
+  noble: "1:27.3.4.9-1"     # Ubuntu 24.04 (from RabbitMQ Erlang repo)
+  bookworm: "1:27.3.4.9-1"  # Debian 12
+  trixie: "1:27.3.4.9-1"    # Debian 13
 
 rabbitmq_erlang_version: "{{ rabbitmq_erlang_version_map.get(ansible_distribution_release, '1:27.2-1') }}"
 

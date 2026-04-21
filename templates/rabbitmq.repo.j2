@@ -2,12 +2,16 @@
 ## Zero dependency Erlang RPM
 ##
 
+{% set _el_ver = ansible_distribution_major_version | int %}
+{% set _rabbitmq_el_ver = _el_ver if _el_ver <= 9 else 9 %}
+
 [modern-erlang]
-name=modern-erlang-el{{ ansible_distribution_major_version }}
-baseurl=https://yum1.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/$basearch
-        https://yum2.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/$basearch
+name=modern-erlang-el{{ _rabbitmq_el_ver }}
+baseurl=https://yum1.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/$basearch
+        https://yum2.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/$basearch
 repo_gpgcheck=1
 enabled=1
+priority=1
 gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key
 gpgcheck=1
 sslverify=1
@@ -18,11 +22,12 @@ autorefresh=1
 type=rpm-md
 
 [modern-erlang-noarch]
-name=modern-erlang-el{{ ansible_distribution_major_version }}-noarch
-baseurl=https://yum1.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/noarch
-        https://yum2.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/noarch
+name=modern-erlang-el{{ _rabbitmq_el_ver }}-noarch
+baseurl=https://yum1.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/noarch
+        https://yum2.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/noarch
 repo_gpgcheck=1
 enabled=1
+priority=1
 gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key
        https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc
 gpgcheck=1
@@ -34,9 +39,9 @@ autorefresh=1
 type=rpm-md
 
 [modern-erlang-source]
-name=modern-erlang-el{{ ansible_distribution_major_version }}-source
-baseurl=https://yum1.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/SRPMS
-        https://yum2.rabbitmq.com/erlang/el/{{ ansible_distribution_major_version }}/SRPMS
+name=modern-erlang-el{{ _rabbitmq_el_ver }}-source
+baseurl=https://yum1.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/SRPMS
+        https://yum2.rabbitmq.com/erlang/el/{{ _rabbitmq_el_ver }}/SRPMS
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-erlang.E495BB49CC4BBE5B.key
@@ -53,10 +58,27 @@ autorefresh=1
 ## RabbitMQ Server
 ##
 
-[rabbitmq-el{{ ansible_distribution_major_version }}]
-name=rabbitmq-el{{ ansible_distribution_major_version }}
-baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/$basearch
-        https://yum1.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/$basearch
+[rabbitmq-el{{ _rabbitmq_el_ver }}]
+name=rabbitmq-el{{ _rabbitmq_el_ver }}
+baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/$basearch
+        https://yum1.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/$basearch
+repo_gpgcheck=1
+enabled=1
+priority=1
+gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key
+       https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc
+gpgcheck=1
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+metadata_expire=300
+pkg_gpgcheck=1
+autorefresh=1
+type=rpm-md
+
+[rabbitmq-el{{ _rabbitmq_el_ver }}-noarch]
+name=rabbitmq-el{{ _rabbitmq_el_ver }}-noarch
+baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/noarch
+        https://yum1.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/noarch
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key
@@ -69,26 +91,10 @@ pkg_gpgcheck=1
 autorefresh=1
 type=rpm-md
 
-[rabbitmq-el{{ ansible_distribution_major_version }}-noarch]
-name=rabbitmq-el{{ ansible_distribution_major_version }}-noarch
-baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/noarch
-        https://yum1.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/noarch
-repo_gpgcheck=1
-enabled=1
-gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key
-       https://github.com/rabbitmq/signing-keys/releases/download/3.0/rabbitmq-release-signing-key.asc
-gpgcheck=1
-sslverify=1
-sslcacert=/etc/pki/tls/certs/ca-bundle.crt
-metadata_expire=300
-pkg_gpgcheck=1
-autorefresh=1
-type=rpm-md
-
-[rabbitmq-el{{ ansible_distribution_major_version }}-source]
-name=rabbitmq-el{{ ansible_distribution_major_version }}-source
-baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/SRPMS
-        https://yum1.rabbitmq.com/rabbitmq/el/{{ ansible_distribution_major_version }}/SRPMS
+[rabbitmq-el{{ _rabbitmq_el_ver }}-source]
+name=rabbitmq-el{{ _rabbitmq_el_ver }}-source
+baseurl=https://yum2.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/SRPMS
+        https://yum1.rabbitmq.com/rabbitmq/el/{{ _rabbitmq_el_ver }}/SRPMS
 repo_gpgcheck=1
 enabled=1
 gpgkey=https://github.com/rabbitmq/signing-keys/releases/download/3.0/cloudsmith.rabbitmq-server.9F4587F226208342.key
