@@ -58,9 +58,32 @@ rabbitmq_log_level: info
 rabbitmq_backup_cronjob:
   enabled: false
   schedule: "0 0 * * *"
-  command: "/usr/local/bin/rabbitmqadmin --username={{ rabbitmq_admin_user }} --password={{ rabbitmq_admin_password }} -H localhost -P 15672 export /tmp/cluster.backup-$(date +'%s').json"
+  command: "/usr/local/bin/rabbitmqadmin --username={{ rabbitmq_admin_user }} --password={{ rabbitmq_admin_password }} -H {{ rabbitmq_management_listen_address }} -P {{ rabbitmq_management_port }} export /tmp/cluster.backup-$(date +'%s').json"
 
 rabbitmq_listen_address: "0.0.0.0"
+
+# Port configuration
+rabbitmq_amqp_port: 5672
+rabbitmq_amqp_ssl_port: 5671
+rabbitmq_management_port: 15672
+rabbitmq_management_ssl_port: 15671
+rabbitmq_prometheus_port: 15692
+rabbitmq_prometheus_ssl_port: 15691
+
+# Management API listen address (set to 0.0.0.0 to expose externally)
+rabbitmq_management_listen_address: "127.0.0.1"
+
+# Node name used by rabbitmqctl commands; override if ansible_hostname is wrong
+rabbitmq_nodename: "rabbit@{{ ansible_hostname }}"
+
+# HAProxy listener ports (frontend ports, distinct from backend RabbitMQ ports)
+rabbitmq_haproxy_amqp_port: 5672
+rabbitmq_haproxy_amqp_ssl_port: 5673
+rabbitmq_haproxy_mgmt_port: 15672
+rabbitmq_haproxy_mgmt_ssl_port: 15673
+rabbitmq_haproxy_stats_port: 1936
+rabbitmq_haproxy_log_address: "127.0.0.1"
+
 # rabbitmq_keycloak_url: "https://keycloak.example.com/realms/test"
 # rabbitmq_cluster_name: "rabbit.example.com"
 # rabbitmq_keycloak_client_id: mgt_api_client

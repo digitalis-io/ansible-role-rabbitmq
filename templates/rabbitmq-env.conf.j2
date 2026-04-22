@@ -2,7 +2,7 @@
 RABBITMQ_NODENAME=rabbit@{{ ansible_fqdn }}
 RABBITMQ_USE_LONGNAME=true
 {% else %}
-RABBITMQ_NODENAME=rabbit@{{ ansible_hostname }}
+RABBITMQ_NODENAME={{ rabbitmq_nodename }}
 {% endif %}
 
 {% if rabbitmq_ssl is defined and rabbitmq_ssl.key != "" %}
