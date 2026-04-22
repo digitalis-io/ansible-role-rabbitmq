@@ -1,5 +1,5 @@
 global
-        log 127.0.0.1   local1
+        log {{ rabbitmq_haproxy_log_address }}   local1
         maxconn 4096
 
 defaults
@@ -14,7 +14,7 @@ defaults
         timeout server 50000
 
 listen stats
-        bind *:1936
+        bind *:{{ rabbitmq_haproxy_stats_port }}
         mode http
         stats enable
         stats hide-version
@@ -22,7 +22,7 @@ listen stats
         stats uri /
 
 listen rabbitmq
-        bind {{ ansible_host }}:{{ 5673 if rabbitmq_ssl is defined else 5672 }}
+        bind {{ ansible_host }}:{{ rabbitmq_haproxy_amqp_ssl_port if rabbitmq_ssl is defined else rabbitmq_haproxy_amqp_port }}
         mode            tcp
         balance         roundrobin
         timeout client  3h
@@ -30,14 +30,14 @@ listen rabbitmq
         option          clitcpka
 {% for node in groups['rabbitmq'] %}
 {% if rabbitmq_ssl is defined %}
-        server          {{ node }} {{ node }}:5671  check inter 5s rise 2 fall 3
+        server          {{ node }} {{ node }}:{{ rabbitmq_amqp_ssl_port }}  check inter 5s rise 2 fall 3
 {% else %}
-        server          {{ node }} {{ node }}:5672  check inter 5s rise 2 fall 3
+        server          {{ node }} {{ node }}:{{ rabbitmq_amqp_port }}  check inter 5s rise 2 fall 3
 {% endif %}
 {% endfor %}
 
 listen mgmt
-        bind {{ ansible_host }}:{{ 15673 if rabbitmq_ssl is defined else 15672 }}
+        bind {{ ansible_host }}:{{ rabbitmq_haproxy_mgmt_ssl_port if rabbitmq_ssl is defined else rabbitmq_haproxy_mgmt_port }}
         mode            tcp
         balance         roundrobin
         timeout client  3h
@@ -45,8 +45,8 @@ listen mgmt
         option          clitcpka
 {% for node in groups['rabbitmq'] %}
 {% if rabbitmq_ssl is defined %}
-        server          {{ node }} {{ node }}:15671  check inter 5s rise 2 fall 3
+        server          {{ node }} {{ node }}:{{ rabbitmq_management_ssl_port }}  check inter 5s rise 2 fall 3
 {% else %}
-        server          {{ node }} {{ node }}:15672  check inter 5s rise 2 fall 3
+        server          {{ node }} {{ node }}:{{ rabbitmq_management_port }}  check inter 5s rise 2 fall 3
 {% endif %}
 {% endfor %}
