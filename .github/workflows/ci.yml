@@ -70,16 +70,15 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install ansible-core
-      - name: Package role as tarball
         run: |
           VERSION=${GITHUB_REF_NAME}
           tar --exclude='.git' --exclude='.github' --exclude='molecule' \
-              -czf "ansible-role-rabbitmq-${VERSION}.tar.gz" .
+              -czf "/tmp/ansible-role-rabbitmq-${VERSION}.tar.gz" .
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
           name: ansible-role-rabbitmq-${{ github.ref_name }}
-          path: ansible-role-rabbitmq-${{ github.ref_name }}.tar.gz
+          path: /tmp/ansible-role-rabbitmq-${{ github.ref_name }}.tar.gz
           retention-days: 90
       - name: Publish to Ansible Galaxy
         run: |
