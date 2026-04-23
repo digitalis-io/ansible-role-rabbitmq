@@ -70,5 +70,18 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install ansible-core
+      - name: Package role as tarball
+        run: |
+          VERSION=${GITHUB_REF_NAME}
+          tar --exclude='.git' --exclude='.github' --exclude='molecule' \
+              -czf "ansible-role-rabbitmq-${VERSION}.tar.gz" .
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ansible-role-rabbitmq-${{ github.ref_name }}
+          path: ansible-role-rabbitmq-${{ github.ref_name }}.tar.gz
+          retention-days: 90
       - name: Publish to Ansible Galaxy
-        run: ansible-galaxy role import --token "${{ secrets.GALAXY_API_KEY }}" digitalis-io ansible-role-rabbitmq
+        run: |
+          NS=$(grep namespace: meta/main.yml | awk '{print $2}')
+          ansible-galaxy role import --token "${{ secrets.GALAXY_API_KEY }}" $NS ansible-role-rabbitmq
