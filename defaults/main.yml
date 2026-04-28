@@ -6,6 +6,7 @@ rabbitmq_use_haproxy: false
 rabbitmq_use_longname: false
 
 rabbitmq_version: "4.2.5"
+rabbitmq_admin_version: "2.2.0"
 
 rabbitmq_apt_arch: "{{ ansible_architecture | replace('x86_64', 'amd64') | replace('aarch64', 'arm64') }}"
 rabbitmq_apt_key_path: /usr/share/keyrings/com.rabbitmq.team.gpg

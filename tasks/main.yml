@@ -147,10 +147,9 @@
 - name: Download rabbitmqadmin CLI
   tags: rabbitmqadmin
   ansible.builtin.get_url:
-    url: "{{ 'https' if rabbitmq_ssl is defined else 'http' }}://{{ rabbitmq_management_listen_address }}:{{ rabbitmq_management_ssl_port if rabbitmq_ssl is defined else rabbitmq_management_port }}/cli/rabbitmqadmin"
+    url: "https://github.com/rabbitmq/rabbitmqadmin-ng/releases/download/v{{ rabbitmq_admin_version }}/rabbitmqadmin-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
     dest: /usr/local/bin/rabbitmqadmin
     mode: "0755"
-    validate_certs: false
 
 - name: Install and configure HAProxy
   tags: haproxy
