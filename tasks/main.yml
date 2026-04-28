@@ -147,7 +147,7 @@
 - name: Download rabbitmqadmin CLI
   tags: rabbitmqadmin
   ansible.builtin.get_url:
-    url: "https://github.com/rabbitmq/rabbitmqadmin-ng/releases/download/v{{ rabbitmq_admin_version }}/rabbitmqadmin-linux-{{ 'amd64' if ansible_architecture == 'x86_64' else 'arm64' }}"
+    url: "https://github.com/rabbitmq/rabbitmqadmin-ng/releases/download/v{{ rabbitmq_admin_version }}/rabbitmqadmin-{{ rabbitmq_admin_version }}-{{ ansible_architecture }}-unknown-linux-gnu"
     dest: /usr/local/bin/rabbitmqadmin
     mode: "0755"
 
