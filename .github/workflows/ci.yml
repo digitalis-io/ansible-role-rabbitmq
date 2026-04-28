@@ -17,6 +17,7 @@ on:
       - "v*"
   pull_request:
     paths:
+      - .github/workflows/ci.yml
       - "defaults/**"
       - "handlers/**"
       - "meta/**"
