@@ -1,9 +1,12 @@
 name: CI
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [main, develop]
     paths:
+      - .github/workflows/ci.yml
       - "defaults/**"
       - "handlers/**"
       - "meta/**"
@@ -14,6 +17,7 @@ on:
       - "v*"
   pull_request:
     paths:
+      - .github/workflows/ci.yml
       - "defaults/**"
       - "handlers/**"
       - "meta/**"
@@ -39,16 +43,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - platform: rockylinux9
-          #   image: geerlingguy/docker-rockylinux9-ansible
-          # - platform: rockylinux10
-          #   image: geerlingguy/docker-rockylinux10-ansible
-          # - platform: ubuntu2204
-          #   image: geerlingguy/docker-ubuntu2204-ansible
-          # - platform: ubuntu2404
-          #   image: geerlingguy/docker-ubuntu2404-ansible
-          # - platform: debian12
-          #   image: geerlingguy/docker-debian12-ansible
+          - platform: rockylinux9
+            image: geerlingguy/docker-rockylinux9-ansible
+          - platform: rockylinux10
+            image: geerlingguy/docker-rockylinux10-ansible
+          - platform: ubuntu2204
+            image: geerlingguy/docker-ubuntu2204-ansible
+          - platform: ubuntu2404
+            image: geerlingguy/docker-ubuntu2404-ansible
+          - platform: debian12
+            image: geerlingguy/docker-debian12-ansible
           - platform: debian13
             image: geerlingguy/docker-debian13-ansible
     steps:
