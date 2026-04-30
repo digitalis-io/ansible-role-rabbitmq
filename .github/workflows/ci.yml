@@ -86,5 +86,7 @@ jobs:
           retention-days: 90
       - name: Publish to Ansible Galaxy
         run: |
-          NS=$(grep namespace: meta/main.yml | awk '{print $2}')
-          ansible-galaxy role import --token "${{ secrets.GALAXY_API_KEY }}" $NS ansible-role-rabbitmq
+          ansible-galaxy role import \
+            --token "${{ secrets.GALAXY_API_KEY }}" \
+            "${{ github.repository_owner }}" \
+            "${{ github.event.repository.name }}"
