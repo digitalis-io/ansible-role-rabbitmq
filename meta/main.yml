@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: rabbitmq
-  namespace: digitalisio
+  namespace: digitalis
   author: Digitalis.IO DevOps Team
   description: Ansible role to install and configure RabbitMQ
   company: Digitalis.IO
