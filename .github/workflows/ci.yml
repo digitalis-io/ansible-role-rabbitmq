@@ -84,9 +84,17 @@ jobs:
           name: ansible-role-rabbitmq-${{ github.ref_name }}
           path: /tmp/ansible-role-rabbitmq-${{ github.ref_name }}.tar.gz
           retention-days: 90
-      - name: Publish to Ansible Galaxy
+      # - name: Publish to Ansible Galaxy
+      #   run: |
+      #     ansible-galaxy role import \
+      #       --token "${{ secrets.GALAXY_API_KEY }}" \
+      #       "digitalis-io" \
+      #       "${{ github.event.repository.name }}"
+
+      - name: Publish to Ansible Galaxy Using API
         run: |
-          ansible-galaxy role import \
-            --token "${{ secrets.GALAXY_API_KEY }}" \
-            "digitalis-io" \
-            "${{ github.event.repository.name }}"
+          curl -X 'POST' \
+            "https://galaxy.ansible.com/api/v1/imports/" \
+            -H 'Content-Type: application/json' \
+            -H "Authorization: Token ${{ secrets.GALAXY_API_KEY }}" \
+            --data-raw '{"github_repo": "ansible-role-rabbitmq", "github_user": "digitalis", "alternate_clone_url": "https://github.com/digitalis-io/ansible-role-rabbitmq"}'
