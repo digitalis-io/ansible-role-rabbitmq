@@ -88,5 +88,5 @@ jobs:
         run: |
           ansible-galaxy role import \
             --token "${{ secrets.GALAXY_API_KEY }}" \
-            "${{ github.repository_owner }}" \
+            "digitalisio" \
             "${{ github.event.repository.name }}"
